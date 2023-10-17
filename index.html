@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de imágenes y respuestas OpenAI</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+        body {
+            text-align: center;
+            padding-top: 50px; /* Espacio superior */
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 10px; /* Espacio superior para el botón */
+        }
+        .carousel-container {
+            max-width: 400px; /* Reducido el ancho del carrusel */
+            margin: 30px auto;
+        }
+        .carousel-inner img {
+            max-height: 200px; /* Reducido el tamaño de las imágenes */
+            margin: 0 auto;
+        }
+        .text-container {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* Estilo específico para el campo de descripción */
+        #descripcion {
+            width: 90%;
+        }
+    </style>
+
+
+</head>
+<body>
+    <h3>CONSUMO DE LA API DE OPENAI DALL-2 Y ChatGPT CON FLASK Y JINJA 2</h3>
+
+    <div class="form-container">
+        <form action="/generar_imagen" method="post" style="display: flex; width: 100%;">
+            <div class="form-group" style="margin-right: 10px;">
+                <label for="descripcion" style="font-size: 14px;">Ingresa la descripción de las imágenes a generar:</label>
+                <input type="text" id="descripcion" name="descripcion" style="font-size: 14px;">
+            </div>
+
+            <div class="form-group">
+                <label for="cantidad">Imágenes:</label>
+                <input type="number" id="cantidad" name="cantidad" min="1" max="50">
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-danger custom-btn">Generar</button>
+            </div>
+        </form>
+    </div>
+
+    {% if urls %}
+    <div id="carouselExampleIndicators" class="carousel slide" style="width: 30%; height: 20%; margin: auto;">
+        <div class="carousel-inner">
+            {% for url in urls %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="{{ url }}" class="d-block w-100" alt="Imagen generada">
+                </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="text-container" {% if not pregunta_respuesta %}style="display: none;"{% endif %}>
+        <h2 class="form-title">Descripción de la imagen generada</h2>
+        <p>{% if pregunta_respuesta %}{{ pregunta_respuesta }}{% else %}No hay descripción disponible{% endif %}</p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $('#carouselExampleIndicators').carousel({ interval: false });
+
+        // Mostrar el contenedor de texto si hay una pregunta_respuesta
+        {% if pregunta_respuesta %}
+            $(".text-container").show();
+        {% endif %}
+    </script>
+</body>
+</html>
